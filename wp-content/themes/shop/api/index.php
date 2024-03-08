@@ -39,6 +39,25 @@ if (!is_null($id)) {
     $total_args['include'] = array($id);
 }
 
+// Fetch all product categories
+$product_categories = get_terms('product_cat', array(
+    'hide_empty' => false, // Fetch all categories, even if they are not assigned to any products
+));
+
+// Fetch all product tags
+$product_tags = get_terms('product_tag', array(
+    'hide_empty' => false, // Fetch all tags, even if they are not assigned to any products
+));
+
+// Convert categories and tags to simple arrays of their names
+$all_categories = array_map(function($term) {
+    return $term->name;
+}, $product_categories);
+
+$all_tags = array_map(function($term) {
+    return $term->name;
+}, $product_tags);
+
 $total_query = new WC_Product_Query($total_args);
 $total_products = $total_query->get_products();
 $total_count = count($total_products); // Total number of products matching the criteria
@@ -120,6 +139,8 @@ $response_data = array(
     'current_page' => $page,
     'total_pages' => $total_pages,
     'total_products' => $total_count,
+    'all_categories' => $all_categories, 
+    'all_tags' => $all_tags, 
 );
 
 
